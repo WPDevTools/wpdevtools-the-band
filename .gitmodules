@@ -1,3 +1,6 @@
 [submodule "lib/jQuery-ColorPicker"]
 	path = lib/jQuery-ColorPicker
 	url = https://github.com/Belelros/jQuery-ColorPicker.git
+[submodule "lib/codemirror2"]
+	path = lib/codemirror2
+	url = http://marijnhaverbeke.nl/git/codemirror2

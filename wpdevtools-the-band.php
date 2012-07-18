@@ -30,7 +30,7 @@ class TheBand {
 	
 		if (trim($content) == '') {
 	
-			$query_args = array('post_type' => 'ulv_slides');
+			$query_args = array('post_type' => 'theband-slides');
 			
 			if ($id != '') { $query_args['post__in'] = split(',', $id); }
 			if ($category != '') { $query_args['category'] = split(',', $category); }
@@ -160,8 +160,16 @@ class TheBand {
 	// Enqueue all scripts and CSS
 	public function enqueue_scripts () {
 		if (is_admin()) {
-			wp_enqueue_script("colorpicker", plugins_url('/lib/jQuery-ColorPicker/colorpicker.min.js', __FILE__));
-			wp_enqueue_style("colorpicker", plugins_url('/lib/jQuery-ColorPicker/css/colorpicker.min.css', __FILE__));
+			wp_enqueue_script("color-picker", plugins_url('/lib/jQuery-ColorPicker/colorpicker.min.js', __FILE__));
+			wp_enqueue_style("color-picker", plugins_url('/lib/jQuery-ColorPicker/css/colorpicker.min.css', __FILE__));
+
+			wp_enqueue_script("codemirror", plugins_url('/lib/codemirror2/lib/codemirror.js', __FILE__));
+			wp_enqueue_style("codemirror", plugins_url('/lib/codemirror2/lib/codemirror.css', __FILE__));
+
+			wp_enqueue_script("codemirror-mode-javascript", plugins_url('/lib/codemirror2/mode/javascript/javascript.js', __FILE__));
+			wp_enqueue_script("codemirror-mode-css", plugins_url('/lib/codemirror2/mode/css/css.js', __FILE__));
+			wp_enqueue_style("codemirror-theme-default", plugins_url('/lib/codemirror2/theme/elegant.css', __FILE__));
+
 		} else {
 	
 			wp_enqueue_script( 'jquery' );
@@ -202,39 +210,41 @@ class TheBand {
 			'supports' => array('title','editor','thumbnail')
 		  ); 
 	 
-		register_post_type( 'ulv_slides' , $args );
+		register_post_type( 'theband-slides' , $args );
 		
-		register_taxonomy("slide_categories", array("ulv_slides"), array("hierarchical" => true, "label" => "Slide Categories", "singular_label" => "Slide Category", "rewrite" => true));
+		register_taxonomy("slide_categories", array("theband-slides"), array("hierarchical" => true, "label" => "Slide Categories", "singular_label" => "Slide Category", "rewrite" => true));
 	
 	}
 
 	// Add the slides metadata section to the slide options area
 	public function init_slides_admin(){
-	  add_meta_box("ulv_slides_meta", "Slide Options", array('TheBand','show_slides_meta'), "ulv_slides", "normal", "low");
-	  add_meta_box("ulv_slides_js", "Slide Javascript", array('TheBand','show_slides_js'), "ulv_slides", "normal", "low");
+	  add_meta_box("theband_slides_meta", "Slide Options", array('TheBand','show_slides_meta'), "theband-slides", "normal", "low");
+	  add_meta_box("theband_slides_js", "Slide Javascript", array('TheBand','show_slides_js'), "theband-slides", "normal", "low");
 	}
 
 	// Display the slide metadata in the slide editor
 	public function show_slides_meta() {
 		global $post;
 		$custom = get_post_custom($post->ID);
-		$bgcolor = $custom["bgcolor"][0];
-		$height = $custom["height"][0];
-		$padding = $custom["padding"][0];
-		$css = $custom["css"][0];
+		if (isset($custom['bgcolor'])) {
+			$bgcolor = $custom["bgcolor"][0];
+			$height = $custom["height"][0];
+			$padding = $custom["padding"][0];
+			$css = $custom["css"][0];
+		}
 	?>
 	
 		<p><label>Background Color:</label><br />
 		<input name="bgcolor" id="bgcolor" value="<?php echo $bgcolor; ?>"></p>
 	
 		<p><label>Slide Height:</label><br />
-		<input name="height" id="bgcolor" value="<?php echo $height; ?>"></p>
+		<input name="height" id="height" value="<?php echo $height; ?>"></p>
 	
 		<p><label>Inner HTML Padding:</label><br />
-		<input name="padding" id="bgcolor" value="<?php echo $padding; ?>"></p>
+		<input name="padding" id="padding" value="<?php echo $padding; ?>"></p>
 	
 		<p><label>Custom CSS:</label><br />
-		<textarea style="width: 100%;" rows="10" name="css"><?php echo $css; ?></textarea></p>
+		<div class="widget" style="background-color: #fff;"><textarea style="width: 100%;" rows="10" name="css" id="css"><?php echo $css; ?></textarea></div></p>
 		
 		<script>
 		jQuery(document).ready(function () {
@@ -243,6 +253,11 @@ class TheBand {
 					jQuery('#bgcolor').attr('value', '#' + hex);
 				}
 			});
+
+			var cmCSS = CodeMirror.fromTextArea(document.getElementById("css"), { mode : 'css', lineNumbers : true });
+			var cmJSLoad = CodeMirror.fromTextArea(document.getElementById("load"), { mode : 'javascript', lineNumbers : true });
+			var cmJSReady = CodeMirror.fromTextArea(document.getElementById("ready"), { mode : 'javascript', lineNumbers : true });
+			var cmJSUnload = CodeMirror.fromTextArea(document.getElementById("unload"), { mode : 'javascript', lineNumbers : true });
 		})
 		</script>
 	
@@ -253,19 +268,21 @@ class TheBand {
 	public function show_slides_js() {
 		global $post;
 		$custom = get_post_custom($post->ID);
-		$load = $custom["load"][0];
-		$ready = $custom["ready"][0];
-		$unload = $custom["unload"][0];
+		if (isset($custom['load'])) {
+			$load = $custom["load"][0];
+			$ready = $custom["ready"][0];
+			$unload = $custom["unload"][0];
+		}
 	?>
 	
 		<p><label>On Load:</label><br />
-		<textarea style="width: 100%;" rows="10" name="load"><?php echo $load; ?></textarea></p>
+		<div class="widget" style="background-color: #fff;"><textarea style="width: 100%;" rows="10" name="load" id="load"><?php echo $load; ?></textarea></div></p>
 	
 		<p><label>On Ready:</label><br />
-		<textarea style="width: 100%;" rows="10" name="ready"><?php echo $ready; ?></textarea></p>
+		<div class="widget" style="background-color: #fff;"><textarea style="width: 100%;" rows="10" name="ready" id="ready"><?php echo $ready; ?></textarea></div></p>
 		
 		<p><label>On Unload:</label><br />
-		<textarea style="width: 100%;" rows="10" name="unload"><?php echo $unload; ?></textarea></p>
+		<div class="widget" style="background-color: #fff;"><textarea style="width: 100%;" rows="10" name="unload" id="unload"><?php echo $unload; ?></textarea></div></p>
 	
 	<?php
 	}
@@ -276,7 +293,7 @@ class TheBand {
 		if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
 			// Do nothing?
 		} else {
-			if (get_post_type($post->ID) == 'ulv_slides') {
+			if (isset($post->ID) && get_post_type($post->ID) == 'theband-slides') {
 				update_post_meta($post->ID, "bgcolor", $_POST["bgcolor"]);
 				update_post_meta($post->ID, "height", $_POST["height"]);
 				update_post_meta($post->ID, "padding", $_POST["padding"]);
