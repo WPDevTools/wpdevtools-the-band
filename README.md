@@ -10,7 +10,9 @@ The following are the specifications for how to call the band and what variables
 
 ### Shortcode
 **Shortcode Handle:** `the_band`
+
 **Accepts Content:** Yes, using the `[slide][/slide]` shortcode
+
 **Attributes:**
 
 * `id` - A comma-separated list of slide IDs to display in the band
