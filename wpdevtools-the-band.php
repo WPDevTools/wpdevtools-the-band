@@ -1,11 +1,14 @@
 <?php
 /*
 Plugin Name: WPDevTools - The Band
-Plugin URI: http://wpdevtools.com
-Description: It's a slider with some serious mojo: playback hooks, a custom content type, javascript callbacks... it's got it all.
-Author: Christopher Frazier
+Plugin URI: https://github.com/WPDevTools/wpdevtools-the-band
+Author: WPDevTools
+Author URI: http://wpdevtools.com/
+Description: A customizable, scriptable, and style-able full-browser-width carousel plugin for WordPress.
 Version: 0.2
-Author URI: http://wpdevtools.com
+License: GNU General Public License
+License URI: license.txt
+Tags: carousel, slider, admin, customize
 
 */
 
