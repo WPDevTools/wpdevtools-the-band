@@ -46,16 +46,19 @@ Slides can be added to a band using the inline `[slide][/slide]` shortcode.  Any
 Code Examples
 -------------
 
-`[the_band]`
+		[the_band]
 Displays all of the slides for the site in order of date published.
 
-`[the_band id="45,46,53" full_band="true"]`
+		[the_band id="45,46,53" full_band="true"]
 Displays a set of slides with the full, color band going across the width of the window.
 
-`[the_band height="100px"]`
+		[the_band height="100px"]
 Display a band with a height of 100 pixels, no matter how tall the member slides are.
 
-`[the_band][slide background-color="red"]My First Slide[/slide][slide background-color="white"]My Second Slide[/slide][/the_band]`
+		[the_band]
+			[slide background-color="red"]My First Slide[/slide]
+			[slide background-color="white"]My Second Slide[/slide]
+		[/the_band]
 Displays two slides using the inline slide shortcode feature.  The first slide will have a red background while the second has a white background.
 
 
